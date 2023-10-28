@@ -1,6 +1,6 @@
 # Task Manager App (Android Java)
 
-![Task Manager App](https://imgur.com/YmWyMYo)
+![Task Manager App](https://i.imgur.com/YmWyMYo.png)
 
 A simple Android Java app that lets you manage your tasks. Add, view, edit, and delete tasks with ease.
 
