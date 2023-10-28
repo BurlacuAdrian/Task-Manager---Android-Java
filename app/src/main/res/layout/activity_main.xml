@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".MainActivity"
+    android:gravity="center_horizontal">
+
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Current tasks : "
+        android:textSize="80px"
+        android:paddingLeft="30px"
+        android:paddingBottom="30px"
+        android:paddingTop="30px"
+        />
+
+    <ListView
+        android:id="@+id/mainListView"
+        android:layout_width="match_parent"
+        android:layout_height="500dp"
+        android:paddingLeft="40px"
+        android:paddingRight="40px" />
+
+    <Button
+        android:id="@+id/button"
+        android:paddingTop="40px"
+        android:layout_width="200sp"
+        android:layout_height="wrap_content"
+        android:text="New task"
+        android:textSize="24sp"
+        />
+</LinearLayout>
