@@ -1,6 +1,7 @@
 package app.main;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -50,20 +52,21 @@ public class CustomAdapter extends ArrayAdapter<Task> {
         Switch finishedSwitch=view.findViewById(R.id.finished);
         finishedSwitch.setChecked(taskElement.finished);
         finishedSwitch.setText(taskElement.finished? "Completed" : "Incomplete");
-        finishedSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                taskElement.finished=!taskElement.finished;
-                finishedSwitch.setText(taskElement.finished? "Completed" : "Incomplete");
-
-            }
-        });
-
         int dateComparisonResult = (taskElement.deadline).compareTo(new Date());
         if(dateComparisonResult<0)//deadline exceeded
             dateTimeTV.setTextColor(Color.RED);
         else
             dateTimeTV.setTextColor(Color.rgb(0,100,0));
+        finishedSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                taskElement.finished=!taskElement.finished;
+                finishedSwitch.setText(taskElement.finished? "Completed" : "Incomplete");
+                dateTimeTV.setTextColor(taskElement.finished? Color.BLACK : dateComparisonResult>=0 ? Color.rgb(0,100,0): Color.RED);
+            }
+        });
+
+
 
 
         return view;
