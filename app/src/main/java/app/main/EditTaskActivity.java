@@ -32,7 +32,7 @@ public class EditTaskActivity extends AppCompatActivity {
 
         if(intent.hasExtra(MainActivity.TASK_TO_BE_EDITED)){
             Task editedTask = (Task)intent.getSerializableExtra(MainActivity.TASK_TO_BE_EDITED);
-            Toast.makeText(getApplicationContext(),"here", Toast.LENGTH_LONG).show();
+
             descriptionEditText.setText(editedTask.description);
             deadlineEditText.setText(new SimpleDateFormat("dd/MM/yyyy").format(editedTask.deadline));
             deadlineTimeEditText.setText(new SimpleDateFormat("HH:mm").format(editedTask.deadline));

@@ -1,5 +1,6 @@
 package app.main;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,27 +16,39 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    List<Task> taskList;
+    private List<Task> taskList;
     public static final int REQUEST_CODE_ADD_TASK=100;
     public static final int REQUEST_CODE_EDIT_TASK=101;
     public static final String NEW_TASK="NEW_TASK";
     public static final String TASK_TO_BE_EDITED="TASK_TO_BE_EDITED";
     public static final String ITEM_POSITION="ITEM_POSITION";
+    TasksDB tasksDB;
+    TasksDAO dao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        taskList=new LinkedList<Task>();
-        taskList.add(new Task("Code app",new Date(2023-1900,9,28,8,00),false));
-        taskList.add(new Task("Deploy app",new Date(2023-1900,10,28,23,50),false));
+        List<Task> exampleTasks = new ArrayList<>();
+
+        exampleTasks.add(new Task("Code app",new Date(2023-1900,9,28,8,00),false));
+        exampleTasks.add(new Task("Deploy app",new Date(2023-1900,10,28,23,50),false));
+
+        tasksDB = TasksDB.getInstance(getApplicationContext());
+        dao = tasksDB.getDAO();
+
+
+//        dao.deleteAll();
+//        dao.insertAll(exampleTasks);
+        taskList= dao.getAll();
 
         CustomAdapter adapter = new CustomAdapter(getApplicationContext(),R.layout.task_element,taskList,getLayoutInflater());
         ListView mainListView =findViewById(R.id.mainListView);
@@ -60,7 +73,11 @@ public class MainActivity extends AppCompatActivity {
                         .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int which) {
-                                taskList.remove(position);
+                                Task task = taskList.get(position);
+
+                                taskList.remove(task);
+                                dao.delete(task);
+
                                 adapter.notifyDataSetChanged();
                                 Toast.makeText(getApplicationContext(), "Task deleted", Toast.LENGTH_LONG).show();
                                 dialogInterface.cancel();
@@ -100,14 +117,24 @@ public class MainActivity extends AppCompatActivity {
         if(requestCode==REQUEST_CODE_ADD_TASK && resultCode==RESULT_OK && data!=null){
             Task newTask = (Task)data.getSerializableExtra(NEW_TASK);
             taskList.add(newTask);
+            long id = dao.insertReturnId(newTask);
+            newTask.setUid((int)id);
 
+            Toast.makeText(getApplicationContext(),Long.toString(id),Toast.LENGTH_LONG).show();
             adapter.notifyDataSetChanged();
             Toast.makeText(getApplicationContext(),"Task added successfully",Toast.LENGTH_LONG).show();
+
         }else if(requestCode==REQUEST_CODE_EDIT_TASK && resultCode==RESULT_OK && data!=null){
                 Task newTask = (Task)data.getSerializableExtra(NEW_TASK);
                 int position = (int)data.getSerializableExtra(ITEM_POSITION);
+
                 if(newTask!=null){
-                    taskList.set(position,newTask);
+                    Task taskToBeEdited=taskList.get(position);
+                    taskToBeEdited.setDeadline(newTask.getDeadline());
+                    taskToBeEdited.setDescription(newTask.getDescription());
+                    taskToBeEdited.setFinished(newTask.isFinished());
+                    dao.update(taskList.get(position));
+
                     adapter.notifyDataSetChanged();
                 }
 
